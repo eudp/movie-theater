@@ -1,9 +1,14 @@
 "use client";
 
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CartContext } from "@/providers/CartContext";
 import { MovieInterface } from "@/lib/types";
+import {
+  ADULTS_TICKET_PRICE,
+  CHILDREN_TICKET_PRICE,
+  SENIOR_TICKET_PRICE,
+} from "@/lib/constants";
 
 interface Props {
   toggleModal: () => void;
@@ -88,6 +93,14 @@ export default function PurchaseModal({ toggleModal, movie }: Props) {
     [seniorTickets]
   );
 
+  const totalCosts = useMemo(
+    () =>
+      adultTickets * ADULTS_TICKET_PRICE +
+      childTickets * CHILDREN_TICKET_PRICE +
+      seniorTickets * SENIOR_TICKET_PRICE,
+    [adultTickets, childTickets, seniorTickets]
+  );
+
   return (
     <div className="fixed z-50 inset-0 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen p-4">
@@ -126,7 +139,7 @@ export default function PurchaseModal({ toggleModal, movie }: Props) {
                 htmlFor="adultTickets"
                 className="block text-gray-700 font-bold mb-2"
               >
-                Adult Tickets
+                Adult Tickets ($10)
               </label>
               <input
                 type="number"
@@ -141,7 +154,7 @@ export default function PurchaseModal({ toggleModal, movie }: Props) {
                 htmlFor="childTickets"
                 className="block text-gray-700 font-bold mb-2"
               >
-                Child Tickets
+                Child Tickets ($5)
               </label>
               <input
                 type="number"
@@ -156,7 +169,7 @@ export default function PurchaseModal({ toggleModal, movie }: Props) {
                 htmlFor="seniorTickets"
                 className="block text-gray-700 font-bold mb-2"
               >
-                Senior Tickets
+                Senior Tickets ($7.5)
               </label>
               <input
                 type="number"
@@ -171,7 +184,7 @@ export default function PurchaseModal({ toggleModal, movie }: Props) {
                 className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={handleConfirmPurchase}
               >
-                Confirm Purchase
+                Confirm Purchase (${totalCosts || 0})
               </button>
             </div>
           </div>

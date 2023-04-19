@@ -3,6 +3,11 @@
 import { useCallback, useContext, useMemo } from "react";
 import CartCard from "@/components/cart/CartCard";
 import { CartContext } from "@/providers/CartContext";
+import {
+  ADULTS_TICKET_PRICE,
+  CHILDREN_TICKET_PRICE,
+  SENIOR_TICKET_PRICE,
+} from "@/lib/constants";
 
 export default function Cart() {
   const { cart, setCart } = useContext(CartContext);
@@ -25,6 +30,19 @@ export default function Cart() {
     [cart]
   );
 
+  const totalCosts = useMemo(
+    () =>
+      cart.reduce(
+        (acc, movie) =>
+          acc +
+          movie.adultTickets * ADULTS_TICKET_PRICE +
+          movie.childTickets * CHILDREN_TICKET_PRICE +
+          movie.seniorTickets * SENIOR_TICKET_PRICE,
+        0
+      ),
+    [cart]
+  );
+
   return (
     <div className="bg-gray-100 min-h-screen">
       <div className="container mx-auto py-12">
@@ -41,6 +59,9 @@ export default function Cart() {
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4">
             Total tickets: {totalTickets}
+          </h2>
+          <h2 className="text-2xl font-bold mb-4">
+            Total price: ${totalCosts}
           </h2>
         </div>
       </div>
